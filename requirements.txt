@@ -1,0 +1,11 @@
+Flask
+flask-cors
+opencv-python
+numpy
+scikit-learn
+werkzeug
+Flask-SQLAlchemy
+Flask-Login
+Flask-Bcrypt
+PyMySQL
+

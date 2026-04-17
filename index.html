@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Third Eye - AI Forensic System</title>
+    <!-- Use Google Fonts for Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Fabric.js for Interactive Sketch Canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+    
+    <!-- AUTHENTICATION MODAL -->
+    <div id="auth-modal" class="modal-overlay active">
+        <div class="modal glass-panel">
+            <div class="logo-icon" style="text-align:center; font-size:3rem;">👁️</div>
+            <h2 id="auth-title" style="text-align:center; margin-bottom: 1.5rem;">Secure Access Portal</h2>
+            <input type="text" id="auth-user" class="input-glass" placeholder="Agent ID (Username)">
+            <input type="password" id="auth-pass" class="input-glass" placeholder="Passcode (Password)">
+            <div class="auth-buttons">
+                <button class="btn btn-primary" onclick="handleAuth('login')">Authenticate</button>
+                <button class="btn btn-outline" onclick="handleAuth('register')">Enroll Agent</button>
+            </div>
+            <p class="auth-subtext" style="color:var(--text-muted); font-size:0.8rem; text-align:center; margin-top:1rem;">
+                Default Admin Login: <strong>admin</strong> / <strong>admin123</strong>
+            </p>
+        </div>
+    </div>
+
+    <div class="layout" id="app-layout" style="opacity:0; pointer-events:none;">
+        <aside class="sidebar glass-panel">
+            <div class="logo-container">
+                <div class="logo-icon">👁️</div>
+                <h1 class="logo-text">Third Eye</h1>
+                <p class="logo-subtext">AI Forensics</p>
+                <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--text-muted);">
+                    Agent: <span id="current-agent" style="color:var(--accent);font-weight:bold;">Unknown</span> 
+                    (<span id="current-role">Guest</span>)
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-item active" data-tab="tab-generate">
+                    <span class="nav-icon">✏️</span> Photo to Sketch
+                </button>
+                <button class="nav-item" data-tab="tab-canvas">
+                    <span class="nav-icon">🎨</span> Interactive Canvas
+                </button>
+                <button class="nav-item" data-tab="tab-recognize">
+                    <span class="nav-icon">🔍</span> Suspect Match (AI)
+                </button>
+                <button class="nav-item" data-tab="tab-database">
+                    <span class="nav-icon">🗄️</span> System Status
+                </button>
+                <button class="nav-item admin-only" data-tab="tab-admin" style="display:none;">
+                    <span class="nav-icon">🛡️</span> Admin DB Panel
+                </button>
+            </nav>
+            
+            <div class="status-panel">
+                <button class="btn btn-outline" style="width:100%; margin-bottom: 1rem; border-color: #ef4444; color: #ef4444;" onclick="logout()">Logout</button>
+                <div class="status-indicator">
+                    <div class="dot pulse"></div>
+                    <span id="system-status">System Online</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <!-- TAB 1: Sketch Generator (Photo-to-Sketch) -->
+            <section id="tab-generate" class="tab-content active glass-panel">
+                <header class="section-header">
+                    <h2>AI Sketch Generator</h2>
+                    <p>Upload a suspect's photograph to generate a realistic forensic pencil sketch using advanced computer vision filters.</p>
+                </header>
+                
+                <div class="upload-area" id="upload-gen" ondragover="event.preventDefault()" ondrop="handleDrop(event, 'gen-input')">
+                    <div class="upload-icon">📁</div>
+                    <p>Drag & Drop Photo Here</p>
+                    <p class="upload-sub">or click to browse (.jpg, .png)</p>
+                    <input type="file" id="gen-input" accept="image/*" hidden onchange="handleFileSelect(event, 'gen-preview')">
+                    <button class="btn btn-outline" onclick="document.getElementById('gen-input').click()">Select Photo</button>
+                </div>
+                
+                <div id="gen-preview" class="preview-container hidden">
+                    <img id="gen-img-preview" src="" alt="Selected Photo">
+                    <button class="btn btn-primary btn-large" onclick="generateSketch()">
+                        <span class="btn-text">Generate Forensic Sketch</span>
+                        <div class="loader hidden" id="gen-loader"></div>
+                    </button>
+                </div>
+
+                <div id="gen-results" class="results-container hidden">
+                    <div class="result-card">
+                        <h3>Original Photo</h3>
+                        <img id="gen-res-orig" src="">
+                    </div>
+                    <div class="result-separator">➜</div>
+                    <div class="result-card highlight">
+                        <h3>AI Sketch Output</h3>
+                        <img id="gen-res-sketch" src="">
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: Interactive Canvas (Fabric.js) -->
+            <section id="tab-canvas" class="tab-content" style="padding: 0; display: flex; flex-direction: column; background: linear-gradient(135deg, #8a2be2, #d5006d);">
+                <div class="composer-container" style="display: flex; flex: 1; height: 100%;">
+                    
+                    <!-- Composer Sidebar (Deep Purple Palette) -->
+                    <div class="composer-sidebar" style="background: #5b0a91; width: 250px; display: flex; flex-direction: column; padding: 1.5rem 0; box-shadow: 4px 0 15px rgba(0,0,0,0.3); z-index: 10;">
+                        <div class="category-select" style="padding: 0 1rem; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.5rem;">
+                            <!-- Style it to look like a title rather than a standard select -->
+                            <select id="asset-category" style="width: 100%; background: transparent; color: white; border: none; font-size: 1.4rem; font-weight: 700; outline: none; cursor: pointer; font-family: 'Outfit'; appearance: menulist;" onchange="loadCategoryAssets()">
+                                <option value="faces" style="color: #333;">Faces</option>
+                                <option value="hair" style="color: #333;">Hair</option>
+                                <option value="eyes" style="color: #333;">Eyes</option>
+                                <option value="noses" style="color: #333;">Noses</option>
+                                <option value="lips" style="color: #333;">Lips</option>
+                            </select>
+                        </div>
+                        
+                        <div class="asset-grid custom-scrollbar" id="asset-grid" style="flex: 1; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 0 1rem;">
+                            <!-- Dynamically filled with JS -->
+                        </div>
+                    </div>
+                    
+                    <!-- Main Canvas Area -->
+                    <div class="composer-main" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem;">
+                        <div class="canvas-wrapper" style="background: #fff; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); margin-bottom: 2rem;">
+                            <canvas id="fabricCanvas" width="600" height="480"></canvas>
+                        </div>
+                        
+                        <div class="composer-toolbar" style="display: flex; gap: 1.5rem; justify-content: center;">
+                            <button class="btn" style="background: #00e5ff; color: #000; font-weight: 700; border:none; padding: 1rem 2rem; border-radius: 8px; font-size: 1.05rem;" onclick="bringForward()">Bring Forward</button>
+                            <button class="btn" style="background: #00e5ff; color: #000; font-weight: 700; border:none; padding: 1rem 2rem; border-radius: 8px; font-size: 1.05rem;" onclick="sendBackward()">Send Backward</button>
+                            <button class="btn" style="background: #ffb300; color: #000; font-weight: 700; border:none; padding: 1rem 2rem; border-radius: 8px; font-size: 1.05rem;" onclick="deleteSelected()">Delete Selected</button>
+                            <button class="btn" style="background: #10b981; color: #fff; font-weight: 700; border:none; padding: 1rem 2rem; border-radius: 8px; font-size: 1.05rem;" onclick="recognizeFromCanvas()">Match AI 🔍</button>
+                            
+                            <!-- Custom Upload for Canvas -->
+                            <input type="file" id="canvas-upload" accept="image/*" hidden onchange="uploadToCanvas(event)">
+                            <button class="btn" style="background: #f43f5e; color: #fff; font-weight: 700; border:none; padding: 1rem 2rem; border-radius: 8px; font-size: 1.05rem;" onclick="document.getElementById('canvas-upload').click()">Upload Image 📤</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: Suspect Recognition -->
+            <section id="tab-recognize" class="tab-content glass-panel">
+                <header class="section-header">
+                    <h2>Suspect Recognition Engine</h2>
+                    <p>Upload a forensic sketch (or photo) to match against the criminal database using ML PCA Eigenfaces & SVM.</p>
+                </header>
+
+                <div class="upload-area" id="upload-rec" ondragover="event.preventDefault()" ondrop="handleDrop(event, 'rec-input')">
+                    <div class="upload-icon">👤</div>
+                    <p>Drag & Drop Sketch Here</p>
+                    <p class="upload-sub">or click to browse (.jpg, .png)</p>
+                    <input type="file" id="rec-input" accept="image/*" hidden onchange="handleFileSelect(event, 'rec-preview')">
+                    <button class="btn btn-outline" onclick="document.getElementById('rec-input').click()">Select Profile</button>
+                </div>
+
+                <div id="rec-preview" class="preview-container hidden">
+                    <img id="rec-img-preview" src="" alt="Selected Sketch">
+                    <button class="btn btn-primary btn-large" onclick="recognizeSuspect()">
+                        <span class="btn-text">Run Biometric Match</span>
+                        <div class="loader hidden" id="rec-loader"></div>
+                    </button>
+                </div>
+
+                <div id="rec-results" class="results-container hidden">
+                    <div class="result-card">
+                        <h3>Query Output</h3>
+                        <img id="rec-res-query" src="">
+                    </div>
+                    <div class="result-separator">
+                        <div class="match-score">
+                            <span id="rec-confidence" class="percent">0%</span>
+                            <span>Match</span>
+                        </div>
+                    </div>
+                    <div class="result-card highlight">
+                        <h3 class="matched-name">Matched: <span id="rec-match-name">-</span></h3>
+                        <img id="rec-res-match" src="">
+                        <p id="rec-match-desc" style="font-size:0.85rem; color:var(--text-muted); margin-top:0.5rem;"></p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- TAB 4: Database Status -->
+            <section id="tab-database" class="tab-content glass-panel">
+                <header class="section-header">
+                    <h2>Database Status</h2>
+                    <p>System readiness overview and model parameters.</p>
+                </header>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-db-size">0</div>
+                        <div class="stat-label">Suspects in RBAC DB</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="stat-trained">No</div>
+                        <div class="stat-label">Model Trained (PCA+SVM)</div>
+                    </div>
+                    <div class="stat-card highlight">
+                        <div class="stat-value">Active</div>
+                        <div class="stat-label">System State</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: Admin Panel (RBAC) -->
+            <section id="tab-admin" class="tab-content glass-panel">
+                <header class="section-header">
+                    <h2>Admin Dashboard (RBAC)</h2>
+                    <p>Manage the suspect database. Operations here update the SQLite DB and trigger retraining of the Machine Learning Engine instantly.</p>
+                </header>
+
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h3>Add New Suspect Profile</h3>
+                        <input type="text" id="admin-s-name" class="input-glass" placeholder="Full Name (e.g. John Doe)" style="margin-bottom:1rem;">
+                        <textarea id="admin-s-desc" class="input-glass" placeholder="Criminal Record / Description..." style="margin-bottom:1rem; height:80px; resize:none;"></textarea>
+                        
+                        <div class="upload-area" style="padding: 1.5rem; margin-bottom: 1rem;" id="upload-admin-area" ondrop="handleDrop(event, 'admin-s-file')" ondragover="event.preventDefault()">
+                            <p style="font-size:1rem; margin-bottom:0.5rem;">Upload Headshot</p>
+                            <input type="file" id="admin-s-file" accept="image/*" hidden onchange="document.getElementById('admin-file-name').textContent = this.files[0].name;">
+                            <button class="btn btn-outline" style="padding:0.4rem 1rem;" onclick="document.getElementById('admin-s-file').click()">Select Photo</button>
+                            <p id="admin-file-name" style="color:var(--accent); font-size:0.8rem; margin-top:0.5rem;"></p>
+                        </div>
+                        
+                        <button class="btn btn-primary" style="width:100%;" onclick="uploadSuspectAdmin()">Save & Retrain AI Model</button>
+                    </div>
+
+                    <div class="admin-card">
+                        <h3>Registered Suspects</h3>
+                        <div class="suspect-list" id="suspects-list">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <!-- Notifications Hub -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="static/script.js"></script>
+</body>
+</html>
