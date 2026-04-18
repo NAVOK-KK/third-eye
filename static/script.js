@@ -8,7 +8,8 @@ let fabricCanvas = null;
 // Initialize on Load
 window.onload = async () => {
     initCanvas();
-    await checkAuth();
+    // Always show login modal on page load - require manual login
+    showLoginModal();
 };
 
 // --- AUTHENTICATION ---
@@ -80,7 +81,17 @@ async function handleAuth(type) {
 
 async function logout() {
     await fetch(`${API_URL}/api/logout`, { method: 'POST', credentials: 'include' });
-    checkAuth();
+    showLoginModal();
+}
+
+// Show login modal - require manual login
+function showLoginModal() {
+    document.getElementById('auth-modal').classList.add('active');
+    document.getElementById('app-layout').style.opacity = '0';
+    document.getElementById('app-layout').style.pointerEvents = 'none';
+    // Clear any previous session display
+    document.getElementById('current-agent').textContent = 'Unknown';
+    document.getElementById('current-role').textContent = 'Guest';
 }
 
 // --- TAB NAVIGATION ---

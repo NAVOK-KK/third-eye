@@ -241,7 +241,24 @@ def initialize_db():
             print(f"Initial ML train failed: {e}")
 
 from waitress import serve
+import sys
 
 if __name__ == '__main__':
+    # Force unbuffered output
+    sys.stdout.reconfigure(line_buffering=True)
+    
+    print("=" * 50)
+    print("  Third Eye - AI Forensic System")
+    print("=" * 50)
+    print()
+    
+    # Initialize database
+    print("Initializing database...")
     initialize_db()
+    print("Database ready!")
+    print()
+    
+    # Start server
+    print("Starting server...")
+    print("-" * 50)
     serve(app, host="127.0.0.1", port=5000)
