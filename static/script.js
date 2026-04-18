@@ -40,8 +40,7 @@ async function checkAuth() {
             fetchStatus();
         } else {
             document.getElementById('auth-modal').classList.add('active');
-            document.getElementById('app-layout').style.opacity = '0';
-            document.getElementById('app-layout').style.pointerEvents = 'none';
+            document.getElementById('app-layout').classList.remove('visible');
         }
     } catch (error) {
         console.error("Auth check failed:", error);
