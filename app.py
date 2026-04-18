@@ -12,7 +12,17 @@ app = Flask(__name__, static_folder="static", template_folder=".")
 app.config['SECRET_KEY'] = 'thirdeye_secret_key_123'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///thirdeye.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-CORS(app, supports_credentials=True, origins=["http://127.0.0.1", "http://localhost", "http://127.0.0.1:5000", "http://localhost:5000"])
+@app.after_request
+def after_request(response):
+    origin = request.headers.get('Origin')
+    if origin:
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    return response
+
+CORS(app, supports_credentials=True)
 
 UPLOAD_FOLDER = 'uploads'
 DATABASE_FOLDER = 'database'
@@ -230,6 +240,8 @@ def initialize_db():
         except Exception as e:
             print(f"Initial ML train failed: {e}")
 
+from waitress import serve
+
 if __name__ == '__main__':
     initialize_db()
-    app.run(debug=True, port=5000)
+    serve(app, host="127.0.0.1", port=5000)

@@ -1,4 +1,5 @@
-const API_URL = 'http://127.0.0.1:5000';
+// Dynamic API URL based on current page
+const API_URL = window.location.origin;
 
 let generateFile = null;
 let recognizeFile = null;
@@ -14,6 +15,9 @@ window.onload = async () => {
 async function checkAuth() {
     try {
         const response = await fetch(`${API_URL}/api/me`, { credentials: 'include' });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         const res = await response.json();
         
         if (res.logged_in) {
@@ -25,7 +29,10 @@ async function checkAuth() {
             document.getElementById('current-role').textContent = res.role;
             
             if (res.role === 'admin') {
-                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'flex');
+                document.querySelectorAll('.admin-only').forEach(el => {
+                    el.style.display = '';
+                    el.removeAttribute('style'); // Remove inline display:none
+                });
                 loadAdminSuspects();
             } else {
                 document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
@@ -37,7 +44,8 @@ async function checkAuth() {
             document.getElementById('app-layout').style.pointerEvents = 'none';
         }
     } catch (error) {
-        showToast("Backend offline", "error");
+        console.error("Auth check failed:", error);
+        showToast("Backend offline: " + error.message, "error");
     }
 }
 
@@ -53,6 +61,9 @@ async function handleAuth(type) {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username: user, password: pass})
         });
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         const res = await response.json();
         
         if (res.success) {
@@ -62,7 +73,8 @@ async function handleAuth(type) {
             showToast(res.error || "Authentication failed", "error");
         }
     } catch(err) {
-        showToast("Error connecting to server", "error");
+        console.error("Login failed:", err);
+        showToast("Error: " + err.message, "error");
     }
 }
 
