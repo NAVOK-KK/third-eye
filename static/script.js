@@ -8,8 +8,8 @@ let fabricCanvas = null;
 // Initialize on Load
 window.onload = async () => {
     initCanvas();
-    // Always show login modal on page load - require manual login
-    showLoginModal();
+    // Check if user is already logged in
+    await checkAuth();
 };
 
 // --- AUTHENTICATION ---

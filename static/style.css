@@ -260,12 +260,14 @@ body {
     border: 1px solid var(--border-subtle);
     box-shadow: var(--shadow-lg);
     opacity: 0;
+    visibility: hidden;
     transform: translateY(20px);
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .layout.visible {
     opacity: 1;
+    visibility: visible;
     transform: translateY(0);
 }
 
