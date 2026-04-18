@@ -8,4 +8,6 @@ Flask-SQLAlchemy
 Flask-Login
 Flask-Bcrypt
 PyMySQL
+gunicorn
+waitress
 
