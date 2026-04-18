@@ -7,7 +7,11 @@ let fabricCanvas = null;
 
 // Initialize on Load
 window.onload = async () => {
-    initCanvas();
+    try {
+        initCanvas();
+    } catch(e) {
+        console.log("Canvas init skipped:", e.message);
+    }
     // Check if user is already logged in
     await checkAuth();
 };
