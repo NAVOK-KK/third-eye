@@ -768,6 +768,201 @@ body {
         border-bottom: 1px solid var(--border-subtle);
     }
     
+}
+
+/* Suspect List */
+.suspect-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.suspect-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    transition: all 0.3s ease;
+}
+
+.suspect-item:hover {
+    border-color: var(--accent-cyan);
+    transform: translateX(4px);
+}
+
+.suspect-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.suspect-info {
+    flex: 1;
+}
+
+.suspect-info .name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.suspect-info .desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* ============================================
+   SYSTEM STATUS - Dashboard Cards
+   ============================================ */
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.status-card {
+    background: var(--bg-glass);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border-subtle);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.status-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-cyan);
+    box-shadow: var(--shadow-glow);
+}
+
+.status-card .icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.status-card .value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    margin-bottom: 0.5rem;
+}
+
+.status-card .label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ============================================
+   TOAST NOTIFICATIONS
+   ============================================ */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    animation: slideIn 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toast.success {
+    border-color: var(--accent-emerald);
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.toast.error {
+    border-color: var(--accent-rose);
+    background: rgba(244, 63, 94, 0.1);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.hidden {
+    display: none !important;
+}
+
+.preview-container {
+    text-align: center;
+    padding: 2rem;
+    background: var(--bg-glass);
+    border-radius: 16px;
+    margin-bottom: 2rem;
+}
+
+.preview-container img {
+    max-width: 300px;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-subtle);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .layout {
+        margin: 1rem;
+        height: auto;
+        min-height: 90vh;
+    }
+    
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+    
     .nav-menu {
         flex-direction: row;
         flex-wrap: wrap;
@@ -781,3 +976,150 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================
+   DESCRIBE SUSPECT TAB
+   ============================================ */
+.describe-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    height: calc(100% - 100px);
+}
+
+.describe-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.form-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.describe-output {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    border: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.output-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.output-placeholder p { font-size: 1.1rem; font-weight: 600; }
+.output-placeholder small { font-size: 0.85rem; }
+
+.describe-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+/* ============================================
+   TIER BADGE
+   ============================================ */
+.tier-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 6px;
+}
+
+.tier-high     { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid #10b981; }
+.tier-possible { background: rgba(234,179,8,0.2);  color: #eab308; border: 1px solid #eab308; }
+.tier-none     { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid #ef4444; }
+
+/* ============================================
+   RANKED SUSPECT LIST
+   ============================================ */
+.ranked-results {
+    margin-top: 0.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.ranked-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.ranked-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 0.9rem 1.2rem;
+    transition: background 0.2s;
+}
+
+.ranked-item:hover { background: rgba(255,255,255,0.04); }
+
+.rank-badge {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    min-width: 2.5rem;
+    text-align: center;
+}
+
+.ranked-item:first-child .rank-badge { color: var(--accent); }
+
+.rank-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.rank-score {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    min-width: 80px;
+    text-align: right;
+}
+
+/* ============================================
+   ENHANCED RESULTS PANEL
+   ============================================ */
+#gen-enhanced-result .result-card { flex: 1; }
