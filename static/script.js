@@ -14,14 +14,23 @@ window.onload = async () => {
 
 // --- AUTHENTICATION ---
 async function checkAuth() {
+    console.log("Checking auth...");
     try {
         const response = await fetch(`${API_URL}/api/me`, { credentials: 'include' });
+        console.log("Auth response status:", response.status);
+        
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        const res = await response.json();
+        
+        const text = await response.text();
+        console.log("Auth response text:", text);
+        
+        const res = JSON.parse(text);
+        console.log("Auth parsed:", res);
         
         if (res.logged_in) {
+            console.log("User is logged in, showing dashboard");
             document.getElementById('auth-modal').classList.remove('active');
             document.getElementById('app-layout').classList.add('visible');
             
@@ -31,7 +40,7 @@ async function checkAuth() {
             if (res.role === 'admin') {
                 document.querySelectorAll('.admin-only').forEach(el => {
                     el.style.display = '';
-                    el.removeAttribute('style'); // Remove inline display:none
+                    el.removeAttribute('style');
                 });
                 loadAdminSuspects();
             } else {
@@ -39,6 +48,7 @@ async function checkAuth() {
             }
             fetchStatus();
         } else {
+            console.log("User not logged in, showing login");
             document.getElementById('auth-modal').classList.add('active');
             document.getElementById('app-layout').classList.remove('visible');
         }
@@ -49,6 +59,7 @@ async function checkAuth() {
 }
 
 async function handleAuth(type) {
+    console.log("handleAuth called, type:", type);
     const user = document.getElementById('auth-user').value;
     const pass = document.getElementById('auth-pass').value;
     if(!user || !pass) { showToast("Enter credentials", "error"); return; }
@@ -60,14 +71,19 @@ async function handleAuth(type) {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({username: user, password: pass})
         });
+        console.log("Login response status:", response.status);
+        
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
+        
         const res = await response.json();
+        console.log("Login response:", res);
         
         if (res.success) {
             showToast(res.message || "Authorized", "success");
-            checkAuth();
+            console.log("Login successful, calling checkAuth...");
+            await checkAuth();
         } else {
             showToast(res.error || "Authentication failed", "error");
         }

@@ -5,7 +5,7 @@ def create_svg(path, content):
     with open(path, 'w') as f:
         f.write(content)
 
-base_dir = r"c:\xampp\htdocs\third-eye\static\assets"
+base_dir = r"c:\Users\Admin\Downloads\third-eye\third-eye\static\assets"
 
 # Faces
 face1 = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250">

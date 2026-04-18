@@ -21,7 +21,14 @@ class ForensicMLSystem:
         img = cv2.imread(image_path)
         if img is None:
             return None
-        
+            
+        # Resize image to a maximum dimension to prevent performance issues
+        max_dim = 800
+        h, w = img.shape[:2]
+        if max(h, w) > max_dim:
+            scale = max_dim / max(h, w)
+            img = cv2.resize(img, (int(w * scale), int(h * scale)))
+            
         # 1. Convert to Grayscale
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         

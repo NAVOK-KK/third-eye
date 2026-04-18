@@ -3,7 +3,7 @@ import glob
 import numpy as np
 import os
 
-paths = glob.glob(r"c:\xampp\htdocs\third-eye\static\assets\*\*.png")
+paths = glob.glob(r"c:\Users\Admin\Downloads\third-eye\third-eye\static\assets\*\*.png")
 for p in paths:
     img = cv2.imread(p, cv2.IMREAD_UNCHANGED)
     if img is None:
