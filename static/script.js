@@ -23,8 +23,7 @@ async function checkAuth() {
         
         if (res.logged_in) {
             document.getElementById('auth-modal').classList.remove('active');
-            document.getElementById('app-layout').style.opacity = '1';
-            document.getElementById('app-layout').style.pointerEvents = 'all';
+            document.getElementById('app-layout').classList.add('visible');
             
             document.getElementById('current-agent').textContent = res.username;
             document.getElementById('current-role').textContent = res.role;
@@ -87,8 +86,7 @@ async function logout() {
 // Show login modal - require manual login
 function showLoginModal() {
     document.getElementById('auth-modal').classList.add('active');
-    document.getElementById('app-layout').style.opacity = '0';
-    document.getElementById('app-layout').style.pointerEvents = 'none';
+    document.getElementById('app-layout').classList.remove('visible');
     // Clear any previous session display
     document.getElementById('current-agent').textContent = 'Unknown';
     document.getElementById('current-role').textContent = 'Guest';

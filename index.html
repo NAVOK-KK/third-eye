@@ -13,36 +13,39 @@
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-    <div class="glow-sphere sphere-1"></div>
-    <div class="glow-sphere sphere-2"></div>
+    <!-- Animated Background Mesh -->
+    <div class="bg-mesh"></div>
     
     <!-- AUTHENTICATION MODAL -->
     <div id="auth-modal" class="modal-overlay active">
-        <div class="modal glass-panel">
-            <div class="logo-icon" style="text-align:center; font-size:3rem;">👁️</div>
-            <h2 id="auth-title" style="text-align:center; margin-bottom: 1.5rem;">Secure Access Portal</h2>
+        <div class="modal">
+            <div class="modal-logo">
+                <span class="logo-icon">👁️</span>
+                <h2>Third Eye</h2>
+                <p>AI Forensic System - Secure Access</p>
+            </div>
             <input type="text" id="auth-user" class="input-glass" placeholder="Agent ID (Username)">
             <input type="password" id="auth-pass" class="input-glass" placeholder="Passcode (Password)">
             <div class="auth-buttons">
                 <button class="btn btn-primary" onclick="handleAuth('login')">Authenticate</button>
                 <button class="btn btn-outline" onclick="handleAuth('register')">Enroll Agent</button>
             </div>
-            <p class="auth-subtext" style="color:var(--text-muted); font-size:0.8rem; text-align:center; margin-top:1rem;">
-                Default Admin Login: <strong>admin</strong> / <strong>admin123</strong>
-            </p>
+            <p class="auth-subtext">Default Admin: <strong>admin</strong> / <strong>admin123</strong></p>
         </div>
     </div>
 
-    <div class="layout" id="app-layout" style="opacity:0; pointer-events:none;">
-        <aside class="sidebar glass-panel">
+    <div class="layout" id="app-layout">
+        <aside class="sidebar">
             <div class="logo-container">
-                <div class="logo-icon">👁️</div>
+                <span class="logo-icon">👁️</span>
                 <h1 class="logo-text">Third Eye</h1>
                 <p class="logo-subtext">AI Forensics</p>
-                <div style="margin-top:0.5rem; font-size:0.85rem; color:var(--text-muted);">
-                    Agent: <span id="current-agent" style="color:var(--accent);font-weight:bold;">Unknown</span> 
-                    (<span id="current-role">Guest</span>)
-                </div>
+            </div>
+            
+            <div class="user-info">
+                <div class="label">Logged in as</div>
+                <div class="username" id="current-agent">Unknown</div>
+                <div class="role" id="current-role">Guest</div>
             </div>
             
             <nav class="nav-menu">
